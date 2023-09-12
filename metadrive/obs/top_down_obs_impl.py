@@ -464,13 +464,11 @@ class ObservationWindowMultiChannel:
             k: ObservationWindow(max_range=max_range, resolution=resolution)
             for k in ["traffic_flow", "target_vehicle"]
         }
-        self.sub_observations["road_network"] = ObservationWindow(
-            max_range=max_range,
-            resolution=(resolution[0] * 2, resolution[1] * 2)
-            # max_range=max_range, resolution=resolution
-        )
-
-        self.resolution = (resolution[0] * 2, resolution[1] * 2)
+        self.sub_observations = {
+            k: ObservationWindow(max_range=max_range, resolution=resolution)
+            for k in names
+        }
+        self.resolution = resolution
         self.canvas_display = None
 
     def get_canvas_display(self):
@@ -504,8 +502,6 @@ class ObservationWindowMultiChannel:
         ret = self.get_observation_window()
 
         for k in ret.keys():
-            if k == "road_network":
-                continue
             ret[k] = pygame.transform.scale2x(ret[k])
 
         def _draw(canvas, key, color):
